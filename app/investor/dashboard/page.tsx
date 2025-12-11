@@ -16,6 +16,12 @@ export default async function InvestorDashboardPage() {
   // Get investor profile
   const { data: profile } = await supabase.from("profiles").select("*, investor_profiles(*)").eq("id", user.id).single()
 
+  if (!profile?.investor_profiles || profile.investor_profiles.length === 0) {
+    redirect("/auth/onboarding?role=investor")
+  }
+
+  const investorProfileId = profile.investor_profiles[0].id
+
   // Get investments with loan details
   const { data: investments } = await supabase
     .from("investments")
@@ -28,7 +34,7 @@ export default async function InvestorDashboardPage() {
       )
     `,
     )
-    .eq("investor_id", profile?.investor_profiles?.[0]?.id || "")
+    .eq("investor_id", investorProfileId)
     .order("created_at", { ascending: false })
 
   // Get recent transactions

@@ -25,8 +25,6 @@ export default function LoginPage() {
     setIsLoading(true)
     setError(null)
 
-    console.log("[v0] Starting login process")
-
     try {
       const { error: signInError } = await supabase.auth.signInWithPassword({
         email,
@@ -34,33 +32,8 @@ export default function LoginPage() {
       })
       if (signInError) throw signInError
 
-      console.log("[v0] Sign in successful, checking profile")
-
-      const {
-        data: { user },
-      } = await supabase.auth.getUser()
-
-      if (user) {
-        console.log("[v0] User found, fetching profile")
-        const { data: profile, error: profileError } = await supabase
-          .from("profiles")
-          .select("profile_type")
-          .eq("id", user.id)
-          .single()
-
-        console.log("[v0] Profile data:", profile)
-        console.log("[v0] Profile error:", profileError)
-
-        if (!profile) {
-          console.log("[v0] Redirecting to onboarding")
-          router.push("/auth/onboarding")
-        } else {
-          console.log("[v0] Redirecting to dashboard", profile.profile_type)
-          router.push("/dashboard")
-        }
-      }
+      router.push("/dashboard")
     } catch (error: unknown) {
-      console.log("[v0] Login error:", error)
       setError(error instanceof Error ? error.message : "An error occurred")
     } finally {
       setIsLoading(false)
@@ -72,11 +45,11 @@ export default function LoginPage() {
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6">
           <div className="flex justify-center mb-4">
-            <Image src="/saintsal-logo.png" alt="SaintSal™" width={120} height={120} className="object-contain" />
+            <Image src="/saintsal-logo.png" alt="CookinSaints" width={120} height={120} className="object-contain" />
           </div>
           <Card className="bg-card border-border">
             <CardHeader>
-              <CardTitle className="text-2xl text-primary">Login to SaintSal™</CardTitle>
+              <CardTitle className="text-2xl text-primary">Login to CookinSaints</CardTitle>
               <CardDescription className="text-muted-foreground">
                 Enter your credentials to access your account
               </CardDescription>

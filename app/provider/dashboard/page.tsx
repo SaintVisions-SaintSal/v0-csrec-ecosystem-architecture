@@ -26,11 +26,15 @@ export default async function ProviderDashboardPage() {
     .eq("user_id", user.id)
     .single()
 
+  if (!providerProfile) {
+    redirect("/auth/onboarding?role=property_provider")
+  }
+
   // Fetch properties submitted by this provider
   const { data: properties } = await supabase
     .from("properties")
     .select("*, borrower:borrower_profiles(organization_name)")
-    .eq("provider_id", providerProfile?.id || "")
+    .eq("provider_id", providerProfile.id)
     .order("created_at", { ascending: false })
 
   return <ProviderDashboard profile={profile} providerProfile={providerProfile} properties={properties || []} />
